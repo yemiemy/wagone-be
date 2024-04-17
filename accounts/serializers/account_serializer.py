@@ -4,7 +4,7 @@ from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
-from accounts.models import User
+from accounts.models import User, UserContact
 from accounts.utils import generate_random_password
 
 import logging
@@ -62,6 +62,7 @@ class UserAccountSerializer(UserBaseSerializer):
         with transaction.atomic():
             validated_data["password"] = generate_random_password()
             user = User.objects.create_user(**validated_data)
+            UserContact.objects.get_or_create(user=user)
 
             Token.objects.get_or_create(user=user)
             user.send_verification_email()
@@ -178,3 +179,21 @@ class AccountDeletionSerializer(serializers.Serializer):
             user.is_active = False
             user.save()
         return True
+
+
+class UserContactSerializer(serializers.ModelSerializer):
+    user = UserAccountSerializer()
+    contacts = UserAccountSerializer(many=True)
+
+    class Meta:
+        model = UserContact
+        fields = (
+            "id",
+            "user",
+            "contacts",
+        )
+        read_only_fields = (
+            "id",
+            "user",
+            "contacts",
+        )

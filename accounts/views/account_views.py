@@ -11,8 +11,9 @@ from accounts.serializers import (
     UpdateUserAccountEmailSerializer,
     UpdateUserAccountNameSerializer,
     RegenerateVerificationCodeSerializer,
+    UserContactSerializer,
 )
-from accounts.models import User
+from accounts.models import User, UserContact
 
 
 class AccountRegistrationView(CreateAPIView):
@@ -67,16 +68,13 @@ class AccountDetailsView(APIView):
 
 # contacts
 class UserContactsListView(APIView):
-    serializer_class = UserAccountSerializer
 
     def get_queryset(self):
-        queryset = User.objects.filter(is_active=True).exclude(
-            id=self.request.user.id
-        )
+        queryset = UserContact.objects.filter(user=self.request.user).first()
         return queryset
 
     def get(self, request, *args, **kwargs):
-        serializer = UserAccountSerializer(self.get_queryset(), many=True)
+        serializer = UserContactSerializer(self.get_queryset())
         return Response(serializer.data)
 
 

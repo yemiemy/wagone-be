@@ -2,6 +2,7 @@ from django.db.models import Q
 from rest_framework import serializers
 from chat.models import Chat, Message
 from accounts.models import User
+from accounts.serializers import UserAccountSerializer
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -23,6 +24,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class ChatSerializer(serializers.ModelSerializer):
+    user1 = UserAccountSerializer(read_only=True)
+    user2 = UserAccountSerializer(read_only=True)
     user1_id = serializers.UUIDField(write_only=True)
     user2_id = serializers.UUIDField(write_only=True)
     messages = MessageSerializer(many=True, read_only=True)

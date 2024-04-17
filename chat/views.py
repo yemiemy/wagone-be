@@ -7,7 +7,6 @@ from rest_framework import status
 
 
 class MessageAPIView(APIView):
-    # permission_classes = ()
 
     def post(self, request, *args, **kwargs):
         serializer = MessageSerializer(data=request.data)
@@ -17,7 +16,6 @@ class MessageAPIView(APIView):
 
 
 class ChatAPIView(APIView):
-    # permission_classes = ()
 
     def post(self, request, *args, **kwargs):
         serializer = ChatSerializer(data=request.data)

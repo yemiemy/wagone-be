@@ -71,3 +71,14 @@ class User(AbstractUser):
             cache.delete(self.email)
             return True
         return False
+
+
+class UserContact(models.Model):
+    id = models.UUIDField(primary_key=True, default=get_uuid, editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    contacts = models.ManyToManyField(
+        User, related_name="contacts", blank=True
+    )
+
+    def __str__(self) -> str:
+        return f"{self.user.username}'s Contacts"
